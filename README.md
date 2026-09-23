@@ -39,6 +39,8 @@ Uploading a new collection asks for confirmation before replacing current names 
 ## Review and save
 
 - Swipe right or press the heart to like; swipe left or press × to pass. Desktop users can use arrow keys outside form controls.
+- **Undo last decision** returns to the previous card and restores likes, progress, and history, even across round boundaries or after passing the final liked name. One undo is available for the most recent decision made with this feature; it survives reloads. Undo removes that decision from exported history. Importing or restarting clears undo.
+- Discover uses compact spacing while reviewing. Routine swipe announcements do not push the card down, and vertical scrolling on the card remains available.
 - Set an optional last name in Settings to see how the full name reads.
 - New imports and restarts shuffle all names for the first round, showing every imported name exactly once.
 - Once all names have been reviewed, a notice appears and the app continues with liked names only.

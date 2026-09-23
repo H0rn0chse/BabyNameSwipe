@@ -27,35 +27,65 @@ export function loadData(db) {
     const session = tx.objectStore('metadata').get('session');
     const lastName = tx.objectStore('metadata').get('lastName');
     const revision = tx.objectStore('metadata').get('revision');
+    const undo = tx.objectStore('metadata').get('undo');
     tx.oncomplete = () => resolve({ names: names.result, session: session.result,
-      lastName: lastName.result || '', revision: revision.result || 0 });
+      lastName: lastName.result || '', revision: revision.result || 0, canUndo: !!undo.result });
     tx.onabort = () => reject(tx.error || new Error('Could not read browser storage.'));
   });
 }
 
 // Checking the revision inside the write transaction prevents two tabs overwriting progress.
-export function saveState(db, expectedRevision, session, { names, entry, clearHistory = false } = {}) {
+export function saveState(db, expectedRevision, session, { names, entry, clearHistory = false, restoreUndo = false } = {}) {
   return new Promise((resolve, reject) => {
     const tx = db.transaction(['names', 'history', 'metadata'], 'readwrite');
     const metadata = tx.objectStore('metadata');
     let conflict = false;
+    let failureMessage = '';
     const request = metadata.get('revision');
     request.onsuccess = () => {
       if ((request.result || 0) !== expectedRevision) { conflict = true; tx.abort(); return; }
+      if (restoreUndo) {
+        const undo = metadata.get('undo');
+        undo.onsuccess = () => {
+          if (!undo.result) {
+            failureMessage = 'There is no decision to undo.';
+            tx.abort();
+            return;
+          }
+          metadata.put(undo.result.session, 'session');
+          tx.objectStore('history').delete(undo.result.historyId);
+          metadata.delete('undo');
+          metadata.put(expectedRevision + 1, 'revision');
+        };
+        return;
+      }
       if (names) {
         const store = tx.objectStore('names');
         store.clear();
         names.forEach(name => store.put(name));
       }
-      if (clearHistory) tx.objectStore('history').clear();
-      if (entry) tx.objectStore('history').add(entry);
+      if (clearHistory) {
+        tx.objectStore('history').clear();
+        metadata.delete('undo');
+      }
+      if (entry) {
+        // Keep just one pre-decision snapshot, including the exact shuffled queue.
+        // Queue this read before replacing the session below.
+        const previous = metadata.get('session');
+        previous.onsuccess = () => {
+          const decision = tx.objectStore('history').add(entry);
+          decision.onsuccess = () => metadata.put({
+            session: previous.result, historyId: decision.result,
+          }, 'undo');
+        };
+      }
       metadata.put(session, 'session');
       metadata.put(expectedRevision + 1, 'revision');
     };
     tx.oncomplete = () => resolve(expectedRevision + 1);
     tx.onabort = () => reject(new Error(conflict
       ? 'Progress changed in another tab. Latest progress has been reloaded; please try again.'
-      : `Could not save your progress. ${tx.error?.message || 'Browser storage may be full or unavailable.'}`));
+      : failureMessage || `Could not save your progress. ${tx.error?.message || 'Browser storage may be full or unavailable.'}`));
   });
 }
 

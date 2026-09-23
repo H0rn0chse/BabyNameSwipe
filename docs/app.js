@@ -12,11 +12,13 @@ let busy = true;
 let view = 'discover';
 let page = 0;
 let drag = null;
+let canUndo = false;
 const PAGE_SIZE = 20;
 
-function feedback(message, error = false) {
+function feedback(message, error = false, quiet = false) {
   $('feedback').textContent = message;
   $('feedback').classList.toggle('error', error);
+  $('feedback').classList.toggle('visually-hidden', quiet && !error);
   $('feedback').hidden = !message;
 }
 
@@ -26,6 +28,7 @@ function setBusy(value) {
     button.disabled = busy || !db || !names.length;
   });
   $('pass').disabled = $('like').disabled = busy || !db || !session.queue.length;
+  $('undo').disabled = busy || !db || !canUndo;
   $('name-file').disabled = busy || !db;
   $('last-name-form').querySelector('button').disabled = busy || !db;
   $('dismiss-notice').disabled = busy || !db;
@@ -33,6 +36,7 @@ function setBusy(value) {
 
 function showView(next) {
   view = ['discover', 'shortlist', 'settings'].includes(next) ? next : 'discover';
+  document.body.classList.toggle('discover-active', view === 'discover');
   document.querySelectorAll('.view').forEach(section => { section.hidden = section.id !== view; });
   document.querySelectorAll('[data-view]').forEach(button => {
     if (button.dataset.view === view) button.setAttribute('aria-current', 'page');
@@ -61,11 +65,14 @@ function resetDrag() {
 }
 
 function render() {
+  document.body.classList.toggle('has-collection', !!names.length);
+  document.body.classList.toggle('discover-active', view === 'discover');
   $('loading').hidden = true;
   $('welcome').hidden = !!names.length;
   $('no-names').hidden = !names.length || !!session.queue.length;
   $('swipe-area').hidden = !session.queue.length;
   $('collection-stats').hidden = !names.length;
+  $('undo-controls').hidden = !names.length;
   $('round-notice').hidden = !session.notice;
   $('round-notice-text').textContent = session.notice;
   $('nav-count').textContent = session.liked.length;
@@ -128,6 +135,7 @@ async function refresh() {
   byId = new Map(names.map(name => [name.id, name]));
   session = data.session || createSession(names);
   revision = data.revision;
+  canUndo = data.canUndo;
   lastName = data.lastName;
 }
 
@@ -167,7 +175,18 @@ function handleSwipeResult(decision) {
     } });
     const completed = next.round !== session.round;
     session = next;
-    feedback(completed ? session.notice : `${record.name} ${decision === 'like' ? 'added to your favorites' : 'passed'}.`);
+    canUndo = true;
+    feedback(completed ? session.notice : `${record.name} ${decision === 'like' ? 'added to your favorites' : 'passed'}.`, false, true);
+  });
+}
+
+function undoLastDecision() {
+  if (!canUndo) return;
+  operation(async () => {
+    await saveState(db, revision, null, { restoreUndo: true });
+    await refresh();
+    const record = byId.get(session.queue[session.cursor]);
+    feedback(`Last decision undone. Review ${record.name} again.`, false, true);
   });
 }
 
@@ -184,10 +203,11 @@ async function uploadNames(event) {
     names = imported.names;
     byId = new Map(names.map(name => [name.id, name]));
     session = next;
+    canUndo = false;
     page = 0;
     const message = `${names.length.toLocaleString()} names imported${imported.duplicates ? `; ${imported.duplicates} duplicates skipped` : ''}. Ready for a little inspiration?`;
     $('import-summary').textContent = message;
-    feedback(message);
+    feedback(message, false, true);
     showView('discover');
   });
   event.target.value = '';
@@ -201,8 +221,9 @@ function restart() {
     const next = createSession(names);
     revision = await saveState(db, revision, next, { clearHistory: true });
     session = next;
+    canUndo = false;
     page = 0;
-    feedback('A fresh beginning. All your names are ready to review again.');
+    feedback('A fresh beginning. All your names are ready to review again.', false, true);
     showView('discover');
   });
 }
@@ -232,6 +253,7 @@ document.querySelectorAll('[data-download]').forEach(button => button.addEventLi
 $('name-file').addEventListener('change', uploadNames);
 $('pass').addEventListener('click', () => handleSwipeResult('pass'));
 $('like').addEventListener('click', () => handleSwipeResult('like'));
+$('undo').addEventListener('click', undoLastDecision);
 $('previous-page').addEventListener('click', () => { page--; renderShortlist(); });
 $('next-page').addEventListener('click', () => { page++; renderShortlist(); });
 $('last-name-form').addEventListener('submit', event => {

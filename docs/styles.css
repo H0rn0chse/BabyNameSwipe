@@ -10,17 +10,18 @@ button { border: 0; }
 a { color: var(--coral); text-underline-offset: 4px; }
 button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline: 3px solid #a05744; outline-offset: 5px; }
 [hidden] { display: none !important; }
+.visually-hidden { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip-path: inset(50%); white-space: nowrap; border: 0 !important; }
 h1, h2, p { margin-top: 0; }
 h1, .name-group h2, .empty-state h2 { font-family: Georgia, 'Times New Roman', serif; font-weight: 400; }
 em { color: var(--coral); font-weight: 400; }
 .app-shell { max-width: 1120px; margin: auto; padding: 0 40px; }
-.app-header { display: flex; justify-content: space-between; align-items: center; min-height: 106px; border-bottom: 1px solid var(--border); gap: 16px; }
+.app-header { display: flex; justify-content: space-between; align-items: center; min-height: 72px; border-bottom: 1px solid var(--border); gap: 16px; }
 .brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); font-family: Georgia, serif; font-size: 28px; letter-spacing: -1px; }
 .brand-mark { background: var(--coral-light); color: var(--coral); width: 44px; height: 44px; border-radius: 15px; display: grid; place-items: center; font-size: 34px; }
 .brand-dot { color: var(--coral); }
 .privacy-label { color: var(--muted); font-size: 12px; letter-spacing: .3px; }
 .privacy-label span { color: #6d8369; font-size: 20px; vertical-align: middle; margin-right: 6px; }
-.navigation { display: flex; justify-content: center; gap: 8px; margin: 26px auto 0; }
+.navigation { display: flex; justify-content: center; gap: 8px; margin: 12px auto 0; }
 .navigation button { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 22px; min-height: 48px; border-radius: 30px; background: transparent; color: var(--muted); font-size: 14px; }
 .navigation button > span:first-child { font-size: 22px; line-height: 1; }
 .navigation button[aria-current="page"] { background: var(--coral-light); color: #9b493b; }
@@ -31,6 +32,14 @@ h1 { font-size: clamp(32px, 5vw, 44px); letter-spacing: -1.4px; margin-bottom: 1
 .section-heading > p:last-child { color: var(--muted); font-size: 14px; line-height: 1.6; }
 #discover { max-width: 520px; margin: auto; }
 #swipe-area { max-width: 420px; margin: auto; }
+.has-collection #discover .section-heading { margin: 14px 0 16px; }
+.has-collection #discover .section-heading > p { display: none; }
+.has-collection #discover h1 { font-size: 30px; margin: 0; }
+.discover-active.has-collection .app-footer { display: none; }
+.undo-controls { text-align: center; margin-top: 4px; }
+.undo-controls button { font-size: 12px; padding-top: 8px; padding-bottom: 8px; }
+.undo-controls button > span { font-size: 20px; vertical-align: middle; margin-right: 4px; }
+.has-collection .collection-stats { margin-top: 6px; margin-bottom: 14px; }
 .progress-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 12px; margin-bottom: 10px; }
 .pill { display: inline-block; padding: 6px 10px; background: var(--sage); color: #647058; border-radius: 20px; font-size: 11px; font-weight: 600; }
 progress { display: block; appearance: none; width: 100%; height: 4px; border: 0; border-radius: 10px; overflow: hidden; background: #eae5dd; accent-color: #b8c2a8; }
@@ -124,8 +133,8 @@ dialog h2 { font-family: Georgia, serif; font-size: 28px; font-weight: 400; }
 dialog p { color: var(--muted); font-size: 14px; line-height: 1.7; }
 .dialog-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
 @media (max-width: 640px) {
-  .app-shell { padding: 0 20px calc(84px + env(safe-area-inset-bottom)); }
-  .app-header { min-height: 80px; }
+  .app-shell { padding: 0 20px calc(72px + env(safe-area-inset-bottom)); }
+  .app-header { min-height: 56px; }
   .brand { font-size: 24px; gap: 8px; }
   .brand-mark { width: 36px; height: 36px; font-size: 29px; border-radius: 12px; }
   .privacy-label { font-size: 10px; max-width: 94px; line-height: 1.6; text-align: right; }
@@ -150,6 +159,18 @@ dialog p { color: var(--muted); font-size: 14px; line-height: 1.7; }
   .app-footer { padding-top: 26px; }
   .empty-state { padding: 30px 20px; }
   .empty-state h2 { font-size: 29px; }
+  .has-collection #discover .section-heading { margin: 10px 0 12px; }
+  .has-collection #discover h1 { font-size: 26px; }
+  .has-collection .name-card { padding: 14px 20px; }
+  .has-collection .card-topline { display: none; }
+  .has-collection .name-group { margin: 12px 0; }
+  .has-collection .name-group p:empty { display: none; }
+  .has-collection .meaning-block { padding-top: 12px; margin-top: 14px; }
+  .has-collection .meaning-block p { max-height: clamp(64px, 13dvh, 100px); }
+  .has-collection .card-footer { display: none; }
+  .has-collection .card-stack { margin: 12px 0 20px; }
+  .has-collection .gesture-hint { display: none; }
+  .has-collection .round-notice { margin-bottom: 12px; padding-top: 2px; padding-bottom: 2px; }
 }
 @media (max-width: 360px) { .app-shell { padding-left: 14px; padding-right: 14px; } h1 { font-size: 30px; } .swipe-actions { gap: 22px; } .navigation button { font-size: 10px; } .name-group h2 { font-size: 44px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }

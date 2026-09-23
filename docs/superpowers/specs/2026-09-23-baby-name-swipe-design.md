@@ -20,9 +20,13 @@ After the first round, visibly announce that all names have been reviewed and im
 
 Show the current round, position/progress, reviewed count, and current liked count. Display a clear initial empty state before import and an empty-shortlist state when all names have been passed.
 
+Provide a one-step Undo last decision button, including in the empty-shortlist state. Atomically store the pre-decision session and decision history ID in IndexedDB with each new swipe. Undo restores the exact previous queue, cursor, likes, reviewed count, round, and notice and deletes the reverted decision from history. It survives reloads and works across round boundaries without reshuffling the restored queue. Only the latest decision made after this feature is available for undo; undo consumes the saved snapshot. Importing and restarting clear it. Protect undo writes with the same revision check as swipes.
+
 ## UI
 
 Use a warm, clean mobile-first visual design. The primary view contains a compact header, progress, one prominent swipe card, and thumb-friendly pass/like buttons. Each card displays the first name, optional last name, origin chips, and meaning. Long names wrap and long meanings remain scrollable without interfering with horizontal swipes. Respect reduced-motion preferences, maintain visible focus styles, and use semantic controls and live status announcements.
+
+Reduce header and Discover heading spacing, and hide decorative copy while reviewing. Routine swipe announcements remain accessible without inserting a visible banner above the card; errors remain visible and round-completion notices retain their dedicated display. Keep existing vertical scrolling on the card and meaning area unchanged rather than locking gestures to horizontal movement.
 
 Provide a shortlist/results view, an import/settings view, and straightforward navigation. Paginate the shortlist to keep large collections responsive. Settings allow editing the last name, uploading names, downloading the example, and restarting. All views work at small phone widths and on desktop without horizontal overflow.
 
