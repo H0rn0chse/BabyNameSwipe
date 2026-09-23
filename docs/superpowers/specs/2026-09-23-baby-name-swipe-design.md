@@ -32,7 +32,7 @@ Offer a JSON results download containing an export format version, export timest
 
 ## Architecture and validation
 
-Separate pure import/session/export logic from IndexedDB access and UI event/rendering code. Use the built-in Node test runner for pure logic without adding a test framework. Test malformed imports, deduplication, round snapshots, repeated one-name loops, all-pass states, restarts, and exports. Use browser tests against the existing Express server for real IndexedDB persistence, file uploads, touch/pointer and button decisions, last-name updates, reload/resume, replacement confirmation, downloads, and mobile layout. Inspect browser errors and verify edited files before reporting completion.
+Separate pure import/session/export logic from IndexedDB access and UI event/rendering code. Per user request, do not create automated tests, a test suite, or test dependencies. Verification is limited to reviewing edited files, JavaScript syntax checks, and a basic browser smoke check against the existing Express server to confirm the app loads and its core flow works. Inspect browser errors before reporting completion; do not claim comprehensive test coverage.
 
 ## Limitations
 
