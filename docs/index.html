@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#fbf7f2" />
+  <meta name="description" content="Find a little name to love. Swipe, shortlist, and revisit baby names privately on your device." />
+  <title>Little Name — Baby Name Swipe</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23e88874'/%3E%3Ctext x='32' y='46' text-anchor='middle' font-size='44' fill='white'%3E%E2%99%A1%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <a class="brand" href="#discover" aria-label="Little Name home"><span class="brand-mark" aria-hidden="true">♡</span><span>little name<span class="brand-dot">.</span></span></a>
+      <span class="privacy-label"><span aria-hidden="true">◌</span> Just on your device</span>
+    </header>
+    <nav class="navigation" aria-label="Main navigation">
+      <button type="button" data-view="discover" aria-current="page"><span aria-hidden="true">▱</span> Discover</button>
+      <button type="button" data-view="shortlist"><span aria-hidden="true">♡</span> Shortlist <span id="nav-count" class="count">0</span></button>
+      <button type="button" data-view="settings"><span aria-hidden="true">☷</span> Settings</button>
+    </nav>
+    <main>
+      <div id="feedback" class="feedback" role="status" hidden></div>
+      <section id="discover" class="view" aria-labelledby="discover-title">
+        <div class="section-heading"><p class="eyebrow">A LITTLE NAME. A BIG BEGINNING.</p><h1 id="discover-title">Find a name to <em>love.</em></h1><p>Go with your heart. The right one will feel like home.</p></div>
+        <div id="round-notice" class="round-notice" hidden><span id="round-notice-text"></span><button id="dismiss-notice" type="button" aria-label="Dismiss round notice">×</button></div>
+        <div id="loading" class="empty-state"><span class="empty-icon" aria-hidden="true">◌</span><h2>Making a little space…</h2><p>Opening your saved names.</p></div>
+        <div id="welcome" class="empty-state" hidden><span class="empty-icon" aria-hidden="true">✧</span><p class="eyebrow">YOUR NEXT CHAPTER STARTS HERE</p><h2>So many possibilities.<br />One little name.</h2><p>Bring your list of baby names, then swipe your way to the ones that feel just right.</p><button type="button" class="primary" data-open-settings>＋ Upload your names</button><span class="small-note">Private by design. No account needed.</span></div>
+        <div id="no-names" class="empty-state" hidden><span class="empty-icon" aria-hidden="true">♡</span><h2>A fresh start?</h2><p>You’ve passed on every name in this round. Revisit your original list, or bring some new possibilities.</p><button type="button" class="primary" data-restart>Review all names again</button><button type="button" class="text-button" data-open-settings>Upload a new list</button></div>
+        <div id="swipe-area" hidden>
+          <div class="progress-heading"><span id="round-label" class="pill">First impressions</span><span id="position-label"></span></div>
+          <progress id="round-progress" max="1" value="0" aria-label="Names reviewed this round"></progress>
+          <div class="card-stack">
+            <article id="name-card" class="name-card" aria-label="Current baby name">
+              <div class="card-topline"><span id="card-category">A NAME TO GET TO KNOW</span><span aria-hidden="true">✧</span></div>
+              <div class="name-group"><h2 id="first-name"></h2><p id="card-last-name"></p></div>
+              <div id="origins" class="origin-chips" aria-label="Origin"></div>
+              <div class="meaning-block"><h3>THE MEANING</h3><p id="meaning" tabindex="0"></p></div>
+              <div class="card-footer"><span aria-hidden="true">✦</span> A little name. A lifetime of possibility.</div>
+              <span id="swipe-stamp" class="swipe-stamp" aria-hidden="true"></span>
+            </article>
+          </div>
+          <div class="swipe-actions"><div><button type="button" id="pass" class="decision pass" aria-label="Pass on this name"><span aria-hidden="true">×</span></button><span>Not quite</span></div><p>Follow your<br /><em>little feeling.</em></p><div><button type="button" id="like" class="decision like" aria-label="Like this name"><span aria-hidden="true">♥</span></button><span>Love it</span></div></div>
+          <p class="gesture-hint">Swipe left to pass · right to love <span class="desktop-hint">· or use ← →</span></p>
+        </div>
+        <div id="collection-stats" class="collection-stats" hidden><span><strong id="reviewed-count">0</strong> reviewed</span><span class="stats-divider"></span><span><strong id="liked-count">0</strong> little favorites</span></div>
+      </section>
+      <section id="shortlist" class="view" aria-labelledby="shortlist-title" hidden>
+        <div class="section-heading"><p class="eyebrow">THE ONES THAT FEEL RIGHT</p><h1 id="shortlist-title">Your little <em>shortlist.</em></h1><p>A collection of names you keep coming back to.</p></div>
+        <div class="panel shortlist-panel"><div class="panel-heading"><h2>Liked names <span id="shortlist-count" class="pill">0</span></h2><button type="button" class="secondary" data-download>↓ Download results</button></div><p id="shortlist-empty" class="muted">Your favorites will appear here. Head to Discover and give a name some love.</p><ul id="shortlist-items" class="shortlist-items"></ul><div id="pagination" class="pagination" hidden><button type="button" id="previous-page" class="secondary">← Previous</button><span id="page-label"></span><button type="button" id="next-page" class="secondary">Next →</button></div></div>
+        <p class="footnote">Changed your mind? Pass on a name during the next review loop to remove it.</p>
+      </section>
+      <section id="settings" class="view" aria-labelledby="settings-title" hidden>
+        <div class="section-heading"><p class="eyebrow">MAKE IT YOURS</p><h1 id="settings-title">The little <em>details.</em></h1><p>Your names, your family, your own pace.</p></div>
+        <div class="settings-grid">
+          <section class="panel"><span class="panel-icon" aria-hidden="true">✎</span><h2>A name that fits your family</h2><p>Try out the full name. Your last name appears on every card.</p><form id="last-name-form"><label for="last-name">Last name <span class="muted">(optional)</span></label><div class="input-row"><input type="text" id="last-name" name="lastName" autocomplete="family-name" maxlength="100" placeholder="Your family name" /><button type="submit" class="primary">Save</button></div></form></section>
+          <section class="panel"><span class="panel-icon" aria-hidden="true">↥</span><h2>Bring your own names</h2><p>Upload a JSON list with names, meanings, and origins. Everything stays in this browser.</p><label class="upload-zone" for="name-file"><span class="upload-symbol" aria-hidden="true">＋</span><strong>Choose a names file</strong><span>JSON · up to 5 MB</span><input type="file" id="name-file" accept=".json,application/json" /></label><p id="import-summary" class="small-note"></p><details><summary>What should my file look like?</summary><pre><code>[
+  {
+    "name": "Clara",
+    "meaning": "Bright, clear",
+    "origin": ["Latin"]
+  }
+]</code></pre><p>Meaning and origin are optional. Duplicate name/origin combinations are skipped.</p><a href="./example.json" download="baby-names-example.json">Download an example ↗</a></details></section>
+          <section class="panel"><span class="panel-icon" aria-hidden="true">↓</span><h2>Keep your little discoveries</h2><p>Download your shortlist, all decisions, and your review history as JSON.</p><button type="button" class="secondary" data-download>↓ Download results</button><p class="small-note">Browser data can be cleared. Download a copy to keep it safe. Exports are for reference; restoring results is not supported.</p></section>
+          <section class="panel"><span class="panel-icon" aria-hidden="true">↺</span><h2>A fresh pair of eyes</h2><p>Start again with all your uploaded names. This clears your likes and review history, but keeps your last name.</p><button type="button" class="secondary danger" data-restart>Restart all names</button></section>
+        </div>
+        <p class="footnote">No accounts. No cloud. Just a little space for your next big adventure.</p>
+      </section>
+    </main>
+    <footer class="app-footer">Made for your next little adventure <span aria-hidden="true">♡</span></footer>
+  </div>
+  <dialog id="confirmation" aria-labelledby="confirmation-title" aria-describedby="confirmation-message"><form method="dialog"><span class="empty-icon" aria-hidden="true">↺</span><h2 id="confirmation-title"></h2><p id="confirmation-message"></p><div class="dialog-actions"><button class="secondary" value="cancel">Keep current list</button><button id="confirm-action" class="primary" value="confirm">Continue</button></div></form></dialog>
+  <noscript><p class="feedback">Please enable JavaScript to import names and save your progress.</p></noscript>
+</body>
+</html>

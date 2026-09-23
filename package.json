@@ -1,0 +1,17 @@
+{
+  "name": "babynameswipe",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "fetch": "node .local/index.js",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
