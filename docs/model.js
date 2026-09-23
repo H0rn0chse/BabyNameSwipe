@@ -1,4 +1,4 @@
-export const MAX_FILE_SIZE = 5 * 1024 * 1024;
+export const MAX_FILE_SIZE = 8 * 1024 * 1024;
 
 export function parseNames(text) {
   let rows;
@@ -30,8 +30,18 @@ export function parseNames(text) {
   return { names, duplicates };
 }
 
+function shuffle(items) {
+  const shuffled = [...items];
+  // Fisher–Yates preserves every item exactly once without mutating the source.
+  for (let index = shuffled.length - 1; index > 0; index--) {
+    const other = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[other]] = [shuffled[other], shuffled[index]];
+  }
+  return shuffled;
+}
+
 export function createSession(names) {
-  return { round: 1, queue: names.map(name => name.id), cursor: 0, liked: [], reviewed: 0, notice: '' };
+  return { round: 1, queue: shuffle(names.map(name => name.id)), cursor: 0, liked: [], reviewed: 0, notice: '' };
 }
 
 export function decide(session, decision) {
@@ -49,7 +59,7 @@ export function decide(session, decision) {
       ? 'All names reviewed! You’re now revisiting your liked names.'
       : `Round ${session.round} complete. Keep exploring your liked names.`;
     if (!next.liked.length) next.notice = 'All names in this round reviewed. No liked names remain.';
-    next.queue = [...next.liked];
+    next.queue = shuffle(next.liked);
     next.cursor = 0;
     next.round++;
   }

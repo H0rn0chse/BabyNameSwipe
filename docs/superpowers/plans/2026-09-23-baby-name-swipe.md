@@ -14,7 +14,7 @@
 
 - No automated tests, test suite, or test dependencies, per user request.
 - Names, decisions, settings, and progress are local to IndexedDB.
-- Upload JSON up to 5 MiB; preserve metadata and reject invalid data before replacement.
+- Upload JSON up to 8 MiB; preserve metadata and reject invalid data before replacement.
 - Continue reviewing liked names indefinitely, including a single remaining name.
 - Preserve existing unrelated workspace changes; no runtime dependencies.
 

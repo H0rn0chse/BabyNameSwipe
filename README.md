@@ -15,7 +15,7 @@ Open **http://localhost:3000**. The existing Express server serves the static ap
 
 ## Upload names
 
-Open **Settings → Choose a names file** and upload a JSON array (up to 5 MiB):
+Open **Settings → Choose a names file** and upload a JSON array (up to 8 MiB):
 
 ```json
 [
@@ -40,10 +40,13 @@ Uploading a new collection asks for confirmation before replacing current names 
 
 - Swipe right or press the heart to like; swipe left or press × to pass. Desktop users can use arrow keys outside form controls.
 - Set an optional last name in Settings to see how the full name reads.
+- New imports and restarts shuffle all names for the first round, showing every imported name exactly once.
 - Once all names have been reviewed, a notice appears and the app continues with liked names only.
+- Every later round freshly shuffles the remaining liked names, showing each once per round. Random order can occasionally match a previous round by chance.
 - Liked names repeat in rounds indefinitely, even when only one remains. Passing on a name removes it from future rounds.
 - If none remain, restart with the original collection or upload another list.
 - Names, settings, decision history, and round progress are saved to IndexedDB. Reloading resumes the current review.
+- An already-saved round keeps its current order and progress; randomization applies when a new round starts, not on reload.
 - Shortlist shows currently liked names, 20 per page.
 - Download results from Shortlist or Settings. The JSON includes your last name, current shortlist, round progress, every name's latest decision (including unreviewed names), and timestamped decision history.
 - Restarting clears likes and history, but retains the names and last name.

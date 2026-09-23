@@ -6,7 +6,7 @@ Build the existing vanilla JavaScript, HTML, and CSS scaffold into a mobile-firs
 
 ## Import and data
 
-Users manually upload a JSON array matching `docs/example.json`: each record has a nonempty `name`, a `meaning` string, and an `origin` array of strings. Missing or empty meaning or origin is accepted and displayed as unavailable; malformed field types or an empty top-level names array are rejected with useful errors. Accept origin strings as a convenience, converting them into arrays. Support files up to 5 MiB without rendering the entire dataset into the DOM. Trim fields and deduplicate equivalent name/origin records. Display an import summary.
+Users manually upload a JSON array matching `docs/example.json`: each record has a nonempty `name`, a `meaning` string, and an `origin` array of strings. Missing or empty meaning or origin is accepted and displayed as unavailable; malformed field types or an empty top-level names array are rejected with useful errors. Accept origin strings as a convenience, converting them into arrays. Support files up to 8 MiB without rendering the entire dataset into the DOM. Trim fields and deduplicate equivalent name/origin records. Display an import summary.
 
 An upload replaces the active collection and its results only after explicit confirmation when an existing collection exists. Validation occurs before replacement and the replacement is atomic. The last name is retained. Provide a downloadable example file.
 
@@ -14,7 +14,7 @@ Use native IndexedDB stores for name records, decision history, and session/sett
 
 ## Swipe flow and repeating liked-name loops
 
-The first round visits every imported name once. Right means like; left means pass. Provide pointer-based dragging for touch/mouse, large explicit buttons, and left/right keyboard controls when not editing a field or using a dialog. Prevent overlapping decisions during persistence.
+The first round visits every imported name once in a shuffled order. New imports and restarts use a Fisher–Yates shuffle of all name IDs; each later round freshly shuffles the remaining liked IDs. Save the shuffled queue with session progress rather than reshuffling on reload. Already-saved rounds keep their order and progress unchanged. Randomization does not guarantee a different permutation each round. Right means like; left means pass. Provide pointer-based dragging for touch/mouse, large explicit buttons, and left/right keyboard controls when not editing a field or using a dialog. Prevent overlapping decisions during persistence.
 
 After the first round, visibly announce that all names have been reviewed and immediately prepare the next round using liked names only. Keep the completion notice visible until dismissed or superseded. Subsequent rounds repeat with the remaining liked names: a like retains the name and a pass removes it from later rounds. Each round uses a snapshot so a name is reviewed once per round. There is no finalist or winner state: even one liked name continues looping. An empty shortlist stops the loop and offers a confirmed restart with all uploaded names. Restart clears decisions but retains names and last name.
 

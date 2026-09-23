@@ -175,7 +175,7 @@ async function uploadNames(event) {
   const file = event.target.files[0];
   if (!file) return;
   await operation(async () => {
-    if (file.size > MAX_FILE_SIZE) throw new Error('Choose a JSON file smaller than 5 MB.');
+    if (file.size > MAX_FILE_SIZE) throw new Error('Choose a JSON file no larger than 8 MB.');
     const imported = parseNames(await file.text());
     if (names.length && !await confirmAction('Make room for new names?',
       'This replaces your current names and clears their likes and review history. Download your results first if you want to keep them. Your last name stays.', 'Replace names')) return;
